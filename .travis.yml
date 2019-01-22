@@ -14,6 +14,7 @@ matrix:
     # https://hub.docker.com/_/centos/
     - env: CONTAINER_IMAGE=centos:7 TOXENV=py34,py27
     - env: CONTAINER_IMAGE=centos:6 TOXENV=py27,py26
+    - env: CONTAINER_IMAGE=centos:5 TOXENV=py27,py24
     # https://hub.docker.com/_/ubuntu/
     - env: CONTAINER_IMAGE=ubuntu:bionic TOXENV=py36,py27
     - env: CONTAINER_IMAGE=ubuntu:trusty TOXENV=py34,py27
@@ -28,7 +29,9 @@ install:
     fi
   - |
     DOCKER_FILE=.travis/Dockerfile
-    if [ "${CONTAINER_IMAGE}" = "centos:6"  ]; then
+    if [[ "${CONTAINER_IMAGE}" =~ centos:5 ]]; then
+        DOCKER_FILE=.travis/Dockerfile.centos5
+    elif [[ "${CONTAINER_IMAGE}" =~ centos:6 ]]; then
         DOCKER_FILE=.travis/Dockerfile.centos6
     elif [[ "${CONTAINER_IMAGE}" =~ centos ]]; then
         DOCKER_FILE=.travis/Dockerfile.centos

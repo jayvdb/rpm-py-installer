@@ -1,4 +1,4 @@
-FROM centos:6
+FROM centos:5
 
 WORKDIR /build
 COPY . .
@@ -11,21 +11,14 @@ RUN sed -i '/^enabled=/ s/1/0/' /etc/yum.repos.d/libselinux.repo
 RUN yum -y update
 RUN yum -y install epel-release
 
-# yum update or yum install fails with package conflict
-# between 64 bit and 32 bit package architectures.
-# https://access.redhat.com/solutions/158883
-RUN yum -y install yum-utils
-RUN package-cleanup --dupes
-RUN package-cleanup --cleandupes
-RUN yum clean all
-RUN yum update
-
-# Remove a package to prevent
+# To prevent below error for "yum install" (rpm-libs and openssl-devel).
 # Transaction Check Error:
 # package libselinux-1.33.4-5.7.el5.centos.x86_64
 # (which is newer than libselinux-1.33.4-5.7.el5.i386) is already installed
-#RUN yum -y erase libselinux
-RUN yum -y --skip-broken install \
+# See https://stackoverflow.com/questions/37648970/yum-install-mysql-devel-x86-64-error-centos5
+RUN yum -y downgrade libselinux
+
+RUN yum -y install \
   # -- RPM packages required for installing --
   rpm-libs \
   redhat-rpm-config \

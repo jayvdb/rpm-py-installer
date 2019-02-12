@@ -14,8 +14,8 @@ RUN yum -y install epel-release
 # Transaction Check Error:
 # package libselinux-1.33.4-5.7.el5.centos.x86_64
 # (which is newer than libselinux-1.33.4-5.7.el5.i386) is already installed
-RUN yum -y erase libselinux
-RUN yum -y install \
+#RUN yum -y erase libselinux
+RUN yum -y --skip-broken install \
   # -- RPM packages required for installing --
   rpm-libs \
   redhat-rpm-config \

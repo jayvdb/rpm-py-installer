@@ -10,6 +10,16 @@ RUN sed -i '/^enabled=/ s/1/0/' /etc/yum.repos.d/libselinux.repo
 
 RUN yum -y update
 RUN yum -y install epel-release
+
+# yum update or yum install fails with package conflict
+# between 64 bit and 32 bit package architectures.
+# https://access.redhat.com/solutions/158883
+RUN yum -y install yum-utils
+RUN package-cleanup --dupes
+RUN package-cleanup --cleandupes
+RUN yum clean all
+RUN yum update
+
 # Remove a package to prevent
 # Transaction Check Error:
 # package libselinux-1.33.4-5.7.el5.centos.x86_64

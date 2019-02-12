@@ -10,6 +10,11 @@ RUN sed -i '/^enabled=/ s/1/0/' /etc/yum.repos.d/libselinux.repo
 
 RUN yum -y update
 RUN yum -y install epel-release
+# Remove a package to prevent
+# Transaction Check Error:
+# package libselinux-1.33.4-5.7.el5.centos.x86_64
+# (which is newer than libselinux-1.33.4-5.7.el5.i386) is already installed
+RUN yum -y erase libselinux
 RUN yum -y install \
   # -- RPM packages required for installing --
   rpm-libs \
@@ -22,7 +27,7 @@ RUN yum -y install \
   python-devel \
   /usr/bin/python2.4 \
   /usr/bin/yumdownloader \
-  /usr/bin/cpio \
+  cpio \
   # -- RPM packages required for a specified case --
   /usr/bin/git \
   && yum clean all
